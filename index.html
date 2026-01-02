@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Airport Portfolio</title>
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      background: url("airport-bg.png") center/cover no-repeat;
+      font-family: "Segoe UI", Arial, sans-serif;
+    }
+
+    /* Overlay sombre pour lisibilité */
+    .overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.35);
+    }
+
+    /* Contenu texte */
+    .content {
+      position: relative;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      padding-left: 8%;
+      color: white;
+      z-index: 1;
+    }
+
+    .text-box {
+      max-width: 500px;
+    }
+
+    .text-box h1 {
+      font-size: 42px;
+      font-weight: 600;
+      margin: 0 0 10px;
+    }
+
+    .text-box h2 {
+      font-size: 24px;
+      font-weight: 300;
+      margin: 0 0 30px;
+    }
+
+    .text-box button {
+      padding: 14px 28px;
+      font-size: 16px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      background: #ffffff;
+      color: #000;
+    }
+
+    .text-box button:hover {
+      background: #f1f1f1;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="overlay"></div>
+
+  <div class="content">
+    <div class="text-box">
+      <h1>This is where my projects take off.</h1>
+      <h2>Choose your destination.</h2>
+     <button onclick="startJourney()">Start the journey ✈️</button>
+
+<script>
+  function startJourney() {
+    window.location.href = "projects.html";
+  }
+</script>
+
+    </div>
+  </div>
+
+</body>
+</html>
