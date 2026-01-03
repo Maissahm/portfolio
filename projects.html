@@ -170,24 +170,43 @@ body {
 
 
 
+ /* VIDEO RESPONSIVE */
   .ticket-section.demo iframe {
-    height: 200px;
-  
+    width: 100%;
+    height: auto;
+    aspect-ratio: 16 / 9;
+    border-radius: 12px;
   }
  
-
   .ticket {
-    width: 95%;
-    max-height: 90svh;
+    width: 100%;
+    max-width: none;
+
+    height: 95svh;          /* 👈 quasi plein écran */
+    max-height: 95svh;
+
+    border-radius: 20px 20px 0 0; /* style mobile */
     padding: 16px;
+
+    overflow-y: auto;
+    background-size: cover;
   }
 
+  /* SECTIONS */
   .ticket-section {
     margin-bottom: 14px;
+    font-size: 14px;
   }
-
   .ticket-title {
-    font-size: 20px;
+    font-size: 18px;
+    text-align: center;
+    margin-bottom: 10px;
+  }
+    /* BOUTON CLOSE PLUS GRAND */
+  .close {
+    font-size: 28px;
+    top: 12px;
+    right: 16px;
   }
 
 }
