@@ -191,11 +191,20 @@ body {
   }
 
 }
+
+
 .modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.7);
+  justify-content: center;
+  align-items: center;
   pointer-events: none;
 }
 
-.modal[style*="flex"] {
+.modal.active {
+  display: flex;
   pointer-events: auto;
 }
 
@@ -257,8 +266,6 @@ body {
 
 <script>
 function openProject(id) {
-  document.getElementById("centerText").style.opacity = "0";
-
   const projects = {
     1: {
       title: "Split Shores",
@@ -277,6 +284,7 @@ function openProject(id) {
   const p = projects[id];
   if (!p) return;
 
+  document.getElementById("centerText").style.opacity = "0";
   document.getElementById("projectTitle").innerText = p.title;
   document.getElementById("projectDescription").innerText = p.description;
 
@@ -289,19 +297,22 @@ function openProject(id) {
   });
 
   document.getElementById("projectVideo").src = p.video;
-  document.getElementById("projectModal").style.display = "flex";
+
+  // ✅ OUVERTURE UNIQUE AU CLIC
+  document.getElementById("projectModal").classList.add("active");
 }
+
 
 
 function closeModal() {
-   
+  const modal = document.getElementById("projectModal");
+  const iframe = document.getElementById("projectVideo");
 
-  document.getElementById("projectModal").style.display = "none";
- document.getElementById("projectVideo").src = "";
-
-document.getElementById("centerText").style.opacity = "1";
-
+  modal.classList.remove("active"); // 👈 clé
+  iframe.src = "";                  // stop la vidéo
+  document.getElementById("centerText").style.opacity = "1";
 }
+
 
 function goBack() {
   window.location.href = "index.html";
