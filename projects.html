@@ -219,34 +219,40 @@ body {
 <button class="back-btn" onclick="goBack()">← Back</button>
 
 <!-- MODAL -->
+<!-- MODAL -->
 <div class="modal" id="projectModal">
+
   <div class="ticket">
 
-    <span class="close" onclick="closeModal()">×</span>
+    <!-- IMAGE DU TICKET (VISIBLE EN MOBILE) -->
+    <img src="ticket-bg.png" class="ticket-img" alt="Ticket background">
 
-    <div class="ticket-title" id="projectTitle"></div>
+    <!-- CONTENU PAR-DESSUS -->
+    <div class="ticket-content">
 
-    <div class="ticket-section description">
+      <span class="close" onclick="closeModal()">×</span>
+
+      <h2 class="ticket-title" id="projectTitle"></h2>
+
       <p id="projectDescription"></p>
-    </div>
 
-    <div class="ticket-section tech">
       <ul id="projectTech"></ul>
+
+      <div class="demo">
+        <iframe
+          id="projectVideo"
+          src=""
+          frameborder="0"
+          allow="autoplay; encrypted-media"
+          allowfullscreen>
+        </iframe>
+      </div>
+
     </div>
-
-    <div class="ticket-section demo">
-     <iframe
-  id="projectVideo"
-  src=""
-  frameborder="0"
-  allow="autoplay; encrypted-media"
-  allowfullscreen>
-</iframe>
-
-    </div>
-
   </div>
+
 </div>
+
 
 <script>
 function openProject(id) {
