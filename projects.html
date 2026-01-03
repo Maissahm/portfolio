@@ -161,7 +161,7 @@ body {
   height: 90px;
   background: black;
   border-radius: 20px;
-  left: 50px;
+  left: 100px;
 }
 
 /* ================= RESPONSIVE ================= */
@@ -187,6 +187,34 @@ body {
   border-radius: 14px;
 
   pointer-events: none; /* 👈 très important */
+}
+ /* ✅ FIX MOBILE : page non coupée */
+@media (max-width: 768px) {
+  body {
+    height: auto;
+    min-height: 100svh;   /* nouvelle unité mobile */
+    overflow-y: auto;
+    background-size: contain;
+    background-position: top center;
+  }
+
+  .ticket {
+    height: auto;
+    padding-bottom: 20px;
+  }
+
+  .ticket-section {
+    position: relative;
+    left: auto;
+    right: auto;
+    padding: 0 20px;
+    margin-bottom: 12px;
+  }
+
+  .ticket-section.demo iframe {
+    width: 100%;
+    height: 180px;
+  }
 }
 
 </style>
@@ -224,7 +252,14 @@ body {
     </div>
 
     <div class="ticket-section demo">
-      <video id="projectVideo" controls></video>
+     <iframe
+  id="projectVideo"
+  src=""
+  frameborder="0"
+  allow="autoplay; encrypted-media"
+  allowfullscreen>
+</iframe>
+
     </div>
 
   </div>
@@ -232,26 +267,25 @@ body {
 
 <script>
 function openProject(id) {
-   document.getElementById("centerText").style.opacity = "0";
-
+  document.getElementById("centerText").style.opacity = "0";
 
   const projects = {
     1: {
       title: "Split Shores",
       description: "Jeu vidéo développé en C avec SDL.",
       tech: ["C", "SDL 1.2"],
-      video: "demo site avec ia.mp4"
+      video: "https://www.youtube.com/embed/tgV_ufYuCWc"
     },
     2: {
       title: "G4S",
-      description: "site web de streaming et impact social.",
-      tech: ["java script", "HTML5","CSS","NodeJS","socket.io"],
-      video: "demo site avec ia.mp4"
+      description: "Site web de streaming et impact social.",
+      tech: ["JavaScript", "HTML5", "CSS", "NodeJS", "Socket.io"],
+      video: "https://www.youtube.com/embed/VIDEO_ID_2"
     }
-
   };
 
   const p = projects[id];
+  if (!p) return;
 
   document.getElementById("projectTitle").innerText = p.title;
   document.getElementById("projectDescription").innerText = p.description;
@@ -268,11 +302,13 @@ function openProject(id) {
   document.getElementById("projectModal").style.display = "flex";
 }
 
+
 function closeModal() {
    
 
   document.getElementById("projectModal").style.display = "none";
-  document.getElementById("projectVideo").pause();
+ document.getElementById("projectVideo").src = "";
+
 document.getElementById("centerText").style.opacity = "1";
 
 }
