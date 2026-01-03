@@ -15,18 +15,21 @@ body {
   overflow-x: hidden;
 }
 
-/* IMAGE BACKGROUND PRO */
 .hero-bg {
-  position: absolute;        /* 👈 clé */
+  position: absolute;
   top: 0;
   left: 0;
+
   width: 100%;
-  min-height: 100%;
+  height: auto;              /* 👈 clé */
+  min-height: 100vh;
+
   object-fit: cover;         /* desktop */
   object-position: center;
+
   z-index: -2;
-  background: black;
 }
+
 
 
 /* OVERLAY */
@@ -141,6 +144,25 @@ body {
 
 @media (max-width: 768px) {
 
+    body {
+    overflow-y: auto;        /* 👈 autorise le scroll */
+  }
+
+  .hero-bg {
+    position: relative;      /* 👈 IMPORTANT */
+    width: 100%;
+    height: auto;
+
+    object-fit: contain;     /* 👈 image entière */
+    object-position: top center;
+
+    min-height: unset;
+  }
+
+  .scene {
+    position: relative;
+    min-height: auto;
+  }
   .ticket {
     width: 95vw;
     aspect-ratio: 3 / 4;          /* 👈 ticket vertical */
