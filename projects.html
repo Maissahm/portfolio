@@ -110,29 +110,27 @@ body {
 }
 
 
-/* TICKET */
 .ticket {
-  background: url("ticket-bg.png") center/cover no-repeat;
-  width: 90%;
-  max-width: 900px;
-
-  max-height: min(85svh, 700px);
-
-
-  overflow-y: auto;             /* 👈 scroll interne */
+  background: url("ticket-bg.png") center/contain no-repeat; /* 👈 clé */
+  width: min(90vw, 900px);
+  aspect-ratio: 16 / 9;            /* 👈 proportions ticket */
+  
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 
   border-radius: 20px;
-  padding: 24px;
+  padding: 28px;
+  overflow: hidden;
 }
 
 
-/* VIDEO */
 .ticket-section.demo iframe {
-  width: 60%;
-  aspect-ratio: 16 / 9;         /* 👈 responsive */
-  border-radius: 10px;
-  border: none;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: 12px;
 }
+
 
 /* CONTENEUR PRINCIPAL */
 .scene {
@@ -143,73 +141,40 @@ body {
 
 @media (max-width: 768px) {
 
-  body {
-    overflow-y: auto;
-  }
-
-  .hero-bg {
-    position: absolute;          /* 👈 IMPORTANT */
-    object-fit: contain;
-    object-position: top center;
-    min-height: 120vh;       /* 👈 permet de tout afficher */
-  }
-
-  .scene {
-    min-height: 160svh;          /* espace pour toutes les valises */
-  }
-
-  .suitcase {
-    width: 140px;
-    height: 110px;
-  }
-
-  .center-text {
-    font-size: 20px;
-    padding: 12px 18px;
-  }
-
-
-
- /* VIDEO RESPONSIVE */
-  .ticket-section.demo iframe {
-    width: 100%;
-    height: auto;
-    aspect-ratio: 16 / 9;
-    border-radius: 12px;
-  }
- 
   .ticket {
-    width: 100%;
-    max-width: none;
-
-    height: 70svh;          /* 👈 quasi plein écran */
-    max-height: 70svh;
-
-    border-radius: 20px 20px 0 0; /* style mobile */
+    width: 95vw;
+    aspect-ratio: 3 / 4;          /* 👈 ticket vertical */
+    
+    background: url("ticket-bg.png") center/contain no-repeat;
     padding: 16px;
-
-    overflow-y: auto;
-    background-size: cover;
+    
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
   }
 
-  /* SECTIONS */
-  .ticket-section {
-    margin-bottom: 14px;
-    font-size: 12px;
-  }
   .ticket-title {
     font-size: 18px;
     text-align: center;
-    margin-bottom: 10px;
-  }
-    /* BOUTON CLOSE PLUS GRAND */
-  .close {
-    font-size: 28px;
-    top: 12px;
-    right: 16px;
   }
 
+  .ticket-section {
+    font-size: 13px;
+  }
+
+  .ticket-section.demo iframe {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    border-radius: 10px;
+  }
+
+  .close {
+    font-size: 26px;
+    top: 10px;
+    right: 14px;
+  }
 }
+
 
 
 .modal {
@@ -346,6 +311,3 @@ document.getElementById("projectModal").addEventListener("click", function(e) {
 
 </body>
 </html>
-
-
-
