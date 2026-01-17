@@ -96,27 +96,337 @@
       .text-box h2 { font-size: 18px; margin-bottom: 22px; }
       .text-box button { width: 100%; }
     }
+    .buttons {
+  display: flex;
+  gap: 15px;
+}
+
+.about-btn {
+  background: transparent;
+  border: 2px solid white;
+  color: white;
+}
+
+.about-btn:hover {
+  background: white;
+  color: black;
+}
+.popup {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+}
+
+.popup-content {
+  position: relative;   /* IMPORTANT pour le X */
+  background: white;
+  color: black;
+  padding: 30px;
+  border-radius: 12px;
+  max-width: 400px;
+  text-align: center;
+}
+
+.close {
+  position: absolute;
+  top: 10px;
+  right: 14px;
+  font-size: 26px;
+  font-weight: bold;
+  color: black;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.close:hover {
+  color: red;
+  transform: scale(1.2);
+}
+.popup-content input,
+.popup-content textarea {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 15px;
+}
+
+.popup-content textarea {
+  resize: none;
+  height: 90px;
+}
+
+.popup-content button {
+  margin-top: 10px;
+  padding: 12px;
+  width: 100%;
+  border-radius: 8px;
+  border: none;
+  background: black;
+  color: white;
+  cursor: pointer;
+}
+
+.popup-content button:hover {
+  background: #333;
+}
+
+
+@keyframes pop {
+  from { transform: scale(0.8); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+.resume-btn {
+  display: inline-block;
+  margin-top: 15px;
+  padding: 12px 20px;
+  background: black;
+  color: white;
+  text-decoration: none;
+  border-radius: 8px;
+  font-size: 15px;
+  transition: 0.3s;
+}
+
+.resume-btn:hover {
+  background: #333;
+  transform: translateY(-2px);
+}
+
+.lang-switch-airport {
+  position: absolute;
+  top: 22px;
+  right: 22px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.55);
+  border: 1px solid rgba(255,255,255,0.4);
+  backdrop-filter: blur(6px);
+  z-index: 1000;
+  font-family: "Segoe UI", Arial, sans-serif;
+}
+
+.lang-switch-airport .lang-icon {
+  font-size: 16px;
+  opacity: 0.85;
+}
+
+.lang-air {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.6px;
+  cursor: pointer;
+  padding: 2px 4px;
+  transition: color 0.2s, transform 0.2s;
+}
+
+.lang-air:hover {
+  color: #ffd54f; /* jaune écran d'aéroport */
+  transform: translateY(-1px);
+}
+
+.lang-switch-airport .sep {
+  opacity: 0.5;
+  font-size: 12px;
+}
+
+/* Langue active */
+.lang-air.active {
+  color: #ffd54f;
+}
+
   </style>
 </head>
 
 <body>
+<div class="lang-switch-airport">
+  <span class="lang-icon">🌍</span>
+  <button onclick="setLang('en')" class="lang-air">EN</button>
+  <span class="sep">|</span>
+  <button onclick="setLang('fr')" class="lang-air">FR</button>
+</div>
+
+
+
   <section class="hero">
     <img class="hero-bg" src="airport-bg.png" alt="Airport background" />
     <div class="overlay"></div>
 
     <div class="content">
       <div class="text-box">
-        <h1>This is where my projects take off.</h1>
-        <h2>Choose your destination.</h2>
-        <button onclick="startJourney()">Start the journey ✈️</button>
+     <h1 id="titleText">This is where my projects take off.</h1>
+<h2 id="subtitleText">Choose your destination.</h2>
+
+
+        <div class="buttons">
+          <button onclick="startJourney()" id="startBtn">Start the journey ✈️</button>
+<button class="about-btn" onclick="openAbout()" id="aboutBtn">About Me 👤</button>
+<button class="about-btn" onclick="openContact()" id="contactBtn">Contact Me 📩</button>
+
+
+        </div>
       </div>
     </div>
   </section>
 
-  <script>
-    function startJourney() {
-      window.location.href = "projects.html";
-    }
-  </script>
+  <!-- POPUP -->
+  <div class="popup" id="aboutPopup">
+    <div class="popup-content">
+  <span class="close" onclick="closeAbout()">×</span>
+ <h2 id="aboutTitle">About Me</h2>
+
+<p id="aboutText">
+  I am a creative web developer passionate about modern design,
+  clean code and user experience. I love building interactive
+  and meaningful digital projects.
+</p>
+
+<a href="resume.pdf" download class="resume-btn" id="resumeBtn">
+  Download Resume 📄
+</a>
+
+</div>
+
+  </div>
+<div class="popup" id="contactPopup">
+  <div class="popup-content">
+    <span class="close" onclick="closeContact()">×</span>
+ <h2 id="contactTitle">Contact Me</h2>
+
+<form id="contactForm">
+  <input type="text" id="nameInput" name="name" placeholder="Your Name" required>
+  <input type="email" id="emailInput" name="email" placeholder="Your Email" required>
+  <textarea id="messageInput" name="message" placeholder="Your Message" required></textarea>
+  <button type="submit" id="sendBtn">Send</button>
+</form>
+
+
+  </div>
+</div>
+
+
+
+  <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+
+<script>
+  function startJourney() {
+    window.location.href = "projects.html";
+  }
+
+  function openAbout() {
+    document.getElementById("aboutPopup").style.display = "flex";
+  }
+
+  function closeAbout() {
+    document.getElementById("aboutPopup").style.display = "none";
+  }
+
+  function openContact() {
+    document.getElementById("contactPopup").style.display = "flex";
+  }
+
+  function closeContact() {
+    document.getElementById("contactPopup").style.display = "none";
+  }
+
+  document.getElementById("contactForm").addEventListener("submit", function(e){
+    e.preventDefault();
+
+    emailjs.sendForm(
+      "service_zqnfk5d",
+      "template_1lm2rbs",
+      this,
+      "EIngS6ayUiT8zpSB0"
+    )
+    .then(function() {
+      alert("Message sent successfully ✉️");
+      closeContact();
+      document.getElementById("contactForm").reset();
+    }, function(error) {
+      alert("Error sending message ❌");
+      console.log(error.text);
+    });
+  });
+  let currentLang = "en";
+const translations = {
+  en: {
+    title: "This is where my projects take off.",
+    subtitle: "Choose your destination.",
+    start: "Start the journey ✈️",
+    about: "About Me 👤",
+    contact: "Contact Me 📩",
+    aboutTitle: "About Me",
+    aboutText:
+      "I am a creative web developer passionate about modern design, clean code and user experience. I love building interactive and meaningful digital projects.",
+    resume: "Download Resume 📄",
+    contactTitle: "Contact Me",
+    send: "Send",
+    namePlaceholder: "Your Name",
+    emailPlaceholder: "Your Email",
+    messagePlaceholder: "Your Message"
+  },
+  fr: {
+    title: "C’est ici que mes projets prennent leur envol.",
+    subtitle: "Choisissez votre destination.",
+    start: "Commencer le voyage ✈️",
+    about: "À propos de moi 👤",
+    contact: "Me contacter 📩",
+    aboutTitle: "À propos de moi",
+    aboutText:
+      "Je suis un développeur web créatif, passionné par le design moderne, le code propre et l’expérience utilisateur. J’aime créer des projets numériques interactifs et porteurs de sens.",
+    resume: "Télécharger le CV 📄",
+    contactTitle: "Me contacter",
+    send: "Envoyer",
+    namePlaceholder: "Votre nom",
+    emailPlaceholder: "Votre email",
+    messagePlaceholder: "Votre message"
+  }
+};
+
+
+function setLang(lang) {
+  localStorage.setItem("portfolioLang", lang); 
+  document.querySelectorAll(".lang-air").forEach(b =>
+  b.classList.remove("active")
+);
+document.querySelector(
+  `.lang-air[onclick="setLang('${lang}')"]`
+).classList.add("active");
+
+  currentLang = lang;
+  const t = translations[lang];
+
+  document.getElementById("titleText").innerText = t.title;
+  document.getElementById("subtitleText").innerText = t.subtitle;
+  document.getElementById("startBtn").innerText = t.start;
+  document.getElementById("aboutBtn").innerText = t.about;
+  document.getElementById("contactBtn").innerText = t.contact;
+
+  document.getElementById("aboutTitle").innerText = t.aboutTitle;
+  document.getElementById("aboutText").innerText = t.aboutText;
+  document.getElementById("resumeBtn").innerText = t.resume;
+
+  document.getElementById("contactTitle").innerText = t.contactTitle;
+  document.getElementById("sendBtn").innerText = t.send;
+  document.getElementById("nameInput").placeholder = t.namePlaceholder;
+document.getElementById("emailInput").placeholder = t.emailPlaceholder;
+document.getElementById("messageInput").placeholder = t.messagePlaceholder;
+
+}
+
+</script>
+
 </body>
+
 </html>
