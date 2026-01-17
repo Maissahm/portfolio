@@ -278,23 +278,78 @@ overflow-x: hidden;
   }
 }
 
+.scene {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+}
+
+/* MOBILE */
+@media (max-width: 768px) {
+
+  body {
+    height: auto;
+    background: none;
+  }
+
+  .scene {
+    width: 100%;
+    aspect-ratio: 9 / 16; /* ajuste si ton image est différente */
+    background: url("suitcases-bg.png") center / contain no-repeat;
+    background-color: #000;
+  }
+
+  .overlay {
+    position: absolute;
+  }
+
+  .suitcase {
+    width: 120px;
+    height: 90px;
+  }
+
+  /* positions RELATIVES À L’IMAGE */
+  #s1 { top: 12%; left: 12%; }
+  #s2 { top: 22%; left: 58%; }
+  #s3 { top: 40%; left: 20%; }
+  #s4 { top: 58%; left: 62%; }
+  #s5 { top: 75%; left: 32%; }
+
+  .center-text {
+    top: 50%;
+    width: 90%;
+    font-size: 18px;
+  }
+
+  .back-btn {
+    position: fixed;
+    top: 12px;
+    left: 12px;
+    z-index: 10;
+  }
+}
 
 </style>
 </head>
 
 <body>
 
-<div class="overlay"></div>
-<div class="center-text" id="centerText">
-  Pick a bag to see one of my projects
+<div class="scene">
+  <div class="overlay"></div>
+
+  <div class="center-text" id="centerText">
+    Pick a bag to see one of my projects
+  </div>
+
+  <div class="suitcase" id="s1" onclick="openProject(1)"></div>
+  <div class="suitcase" id="s2" onclick="openProject(2)"></div>
+  <div class="suitcase" id="s3" onclick="openProject(3)"></div>
+  <div class="suitcase" id="s4" onclick="openProject(4)"></div>
+  <div class="suitcase" id="s5" onclick="openProject(5)"></div>
 </div>
 
-<div class="suitcase" id="s1" onclick="openProject(1)"></div>
-<div class="suitcase" id="s2" onclick="openProject(2)"></div>
-<div class="suitcase" id="s3" onclick="openProject(3)"></div>
-<div class="suitcase" id="s4" onclick="openProject(4)"></div>
-<div class="suitcase" id="s5" onclick="openProject(5)"></div>
 <button class="back-btn" onclick="goBack()" id="backBtn">← Back</button>
+
 
 
 <!-- MODAL -->
@@ -437,3 +492,4 @@ function goBack() {
 
 </body>
 </html>
+
