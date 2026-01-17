@@ -12,7 +12,8 @@ body {
   height: 100vh;
   background: url("suitcases-bg.png") center/cover no-repeat;
   font-family: "Segoe UI", Arial, sans-serif;
-  overflow: hidden;
+overflow-x: hidden;
+
 }
 
 
@@ -202,6 +203,79 @@ body {
 .youtube-btn:hover {
   background: #e62117;
   transform: scale(1.05);
+}
+@media (max-width: 768px) {
+
+  body {
+    height: auto;
+    background: url("suitcases-bg.png") center top / contain no-repeat;
+    background-color: #000; /* bandes noires propres */
+  }
+
+  .overlay {
+    position: fixed;
+  }
+
+  /* Texte central plus petit */
+  .center-text {
+    font-size: 18px;
+    padding: 12px 18px;
+    width: 90%;
+  }
+
+  /* Valises plus petites */
+  .suitcase {
+    width: 120px;
+    height: 90px;
+  }
+
+  /* Réorganisation verticale des valises */
+  #s1 { top: 20%; left: 10%; }
+  #s2 { top: 30%; left: 55%; }
+  #s3 { top: 45%; left: 20%; }
+  #s4 { top: 60%; left: 60%; }
+  #s5 { top: 75%; left: 30%; }
+
+  /* Bouton retour fixe */
+  .back-btn {
+    position: fixed;
+    top: 14px;
+    left: 14px;
+    padding: 8px 14px;
+    font-size: 14px;
+  }
+
+  /* Ticket scrollable sur mobile */
+  .ticket {
+    height: auto;
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+
+  .ticket-section {
+    position: relative;
+    left: auto;
+    right: auto;
+    padding: 12px 20px;
+  }
+
+  .ticket-title {
+    position: relative;
+    padding-left: 0;
+    text-align: center;
+    margin-top: 12px;
+  }
+
+  .ticket-section.demo {
+    text-align: center;
+    padding-bottom: 20px;
+  }
+
+  .youtube-btn {
+    margin: 10px auto;
+    display: block;
+    width: fit-content;
+  }
 }
 
 
