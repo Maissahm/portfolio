@@ -155,72 +155,53 @@ body {
  padding-left: 40px;
 }
 
-.ticket-section.demo video {
-   
+.ticket-section.demo iframe {
   width: 80%;
   height: 90px;
   background: black;
   border-radius: 20px;
-  left: 50px;
 }
 
-/* ================= MOBILE FIX TICKET ================= */
+
+/* ================= RESPONSIVE ================= */
 @media (max-width: 768px) {
+  .suitcase { width: 140px; height: 110px; }
+}
+/* ================= CENTER TEXT ================= */
+.center-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 3;
 
-  /* autoriser le scroll général */
-  body {
-    overflow-y: auto;
-  }
+  font-size: 28px;
+  font-weight: 600;
+  color: white;
+  text-align: center;
+  letter-spacing: 0.5px;
 
-  /* MODAL centré correctement */
-  .modal {
-    align-items: flex-end;
-  }
+  background: rgba(0, 0, 0, 0.45);
+  padding: 16px 28px;
+  border-radius: 14px;
 
-  /* TICKET MOBILE */
-  .ticket {
-    width: 100%;
-    max-width: none;
+  pointer-events: none; /* 👈 très important */
+}
+.youtube-btn {
+  display: inline-block;
+  padding: 12px 20px;
+  background: #000;
+  color: white;
+  text-decoration: none;
+  border-radius: 12px;
+  font-size: 14px;
+  transition: 0.2s;
+   margin-left: 40px;  
+}
 
-    height: auto;
-    min-height: 60vh;
-    max-height: 85vh;
-
-    border-radius: 20px 20px 0 0;
-    padding: 20px;
-
-    background-size: cover;
-    overflow-y: auto;
-  }
-
-  /* ANNULER LE POSITIONNEMENT DESKTOP */
-  .ticket-title,
-  .ticket-section {
-    position: relative;
-    top: auto;
-    left: auto;
-    right: auto;
-    padding: 0;
-    margin-bottom: 14px;
-  }
-
-  /* TITRE */
-
-
-  /* VIDÉO RESPONSIVE */
-  .ticket-section.demo video {
-    width: 100%;
-    height: auto;
-    aspect-ratio: 16 / 9;
-    border-radius: 14px;
-  }
-
-  /* BOUTON FERMER */
-  .close {
-    top: 14px;
-    right: 16px;
-    font-size: 28px;
-  }
+.youtube-btn:hover {
+  background: #e62117;
+  transform: scale(1.05);
 }
 
 
@@ -239,8 +220,8 @@ body {
 <div class="suitcase" id="s3" onclick="openProject(3)"></div>
 <div class="suitcase" id="s4" onclick="openProject(4)"></div>
 <div class="suitcase" id="s5" onclick="openProject(5)"></div>
+<button class="back-btn" onclick="goBack()" id="backBtn">← Back</button>
 
-<button class="back-btn" onclick="goBack()">← Back</button>
 
 <!-- MODAL -->
 <div class="modal" id="projectModal">
@@ -258,38 +239,81 @@ body {
       <ul id="projectTech"></ul>
     </div>
 
-    <div class="ticket-section demo">
-      <video id="projectVideo" controls></video>
-    </div>
+<div class="ticket-section demo" id="projectDemo"></div>
+
 
   </div>
 </div>
 
 <script>
+  const currentLang = localStorage.getItem("portfolioLang") || "en";
+
+const uiText = {
+  en: {
+    center: "Pick a bag to see one of my projects",
+    back: "← Back",
+    watch: "▶ Watch on YouTube",
+    watchVideo: "▶ Watch video"
+  },
+  fr: {
+    center: "Choisissez une valise pour découvrir un projet",
+    back: "← Retour",
+    watch: "▶ Voir sur YouTube",
+    watchVideo: "▶ Voir la vidéo"
+  }
+};
+document.getElementById("centerText").innerText =
+  uiText[currentLang].center;
+
+document.getElementById("backBtn").innerText =
+  uiText[currentLang].back;
+
 function openProject(id) {
    document.getElementById("centerText").style.opacity = "0";
 
+const projects = {
+  1: {
+    title: "Split Shores",
+    description_en:
+      "Split Shores is an adventure video game designed for all ages. Players explore multiple levels with unique environments, enemies and puzzles.",
+    description_fr:
+      "Split Shores est un jeu vidéo d’aventure conçu pour tous les âges. Le joueur explore plusieurs niveaux avec des environnements uniques, des ennemis et des énigmes.",
+    tech: ["C", "SDL 1.2"],
+    video: "https://youtu.be/cb2VBAir7X4?si=txO0yqe4KREmOa_Y"
+  },
 
-  const projects = {
-    1: {
-      title: "Split Shores",
-      description: "Jeu vidéo développé en C avec SDL.",
-      tech: ["C", "SDL 1.2"],
-      video: "demo site avec ia.mp4"
-    },
-    2: {
-      title: "G4S",
-      description: "site web de streaming et impact social.",
-      tech: ["java script", "HTML5","CSS","NodeJS","socket.io"],
-      video: "demo site avec ia.mp4"
-    }
+  2: {
+    title: "G4S",
+    description_en:
+      "G4S is a social impact streaming platform where streamers, viewers and associations collaborate to fund meaningful projects live.",
+    description_fr:
+      "G4S est une plateforme de streaming à impact social où streamers, viewers et associations collaborent pour financer des projets solidaires.",
+    tech: ["JavaScript", "HTML5", "CSS", "NodeJS", "Socket.io"],
+    video: "https://youtu.be/tgV_ufYuCWc"
+  },
 
-  };
+  3: {
+    title: "حويتة",
+    description_en:
+      "Embedded system project for automating the maintenance of an intelligent aquarium.",
+    description_fr:
+      "Projet embarqué dédié à l’automatisation de l’entretien d’un aquarium intelligent.",
+    tech: ["MikroC", "Proteus ISIS", "MPLAB"],
+    videos: [
+      "https://youtu.be/wKviLW0Jd-U",
+      "https://youtu.be/NaFiM1qbRIk"
+    ]
+  }
+};
+
+  
 
   const p = projects[id];
 
   document.getElementById("projectTitle").innerText = p.title;
-  document.getElementById("projectDescription").innerText = p.description;
+document.getElementById("projectDescription").innerText =
+  currentLang === "fr" ? p.description_fr : p.description_en;
+
 
   const tech = document.getElementById("projectTech");
   tech.innerHTML = "";
@@ -299,18 +323,38 @@ function openProject(id) {
     tech.appendChild(li);
   });
 
-  document.getElementById("projectVideo").src = p.video;
+const demo = document.getElementById("projectDemo");
+demo.innerHTML = "";
+
+if (p.videos) {
+  p.videos.forEach((v, i) => {
+    const a = document.createElement("a");
+    a.href = v;
+    a.target = "_blank";
+    a.className = "youtube-btn";
+  a.innerText = `${uiText[currentLang].watchVideo} ${i + 1}`;
+
+    demo.appendChild(a);
+  });
+} else if (p.video) {
+  const a = document.createElement("a");
+  a.href = p.video;
+  a.target = "_blank";
+  a.className = "youtube-btn";
+ a.innerText = uiText[currentLang].watch;
+
+  demo.appendChild(a);
+}
+
+
   document.getElementById("projectModal").style.display = "flex";
 }
 
 function closeModal() {
-   
-
   document.getElementById("projectModal").style.display = "none";
-  document.getElementById("projectVideo").pause();
-document.getElementById("centerText").style.opacity = "1";
-
+  document.getElementById("centerText").style.opacity = "1";
 }
+
 
 function goBack() {
   window.location.href = "index.html";
@@ -319,4 +363,3 @@ function goBack() {
 
 </body>
 </html>
-
