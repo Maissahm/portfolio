@@ -299,6 +299,67 @@ overflow-x: hidden;
     z-index: 10;
   }
 }
+/* ================= TICKET FIX MOBILE ================= */
+@media (max-width: 768px) {
+
+  .modal {
+    align-items: center;
+    padding: 10px;
+  }
+
+  .ticket {
+    width: 100%;
+    max-width: 100%;
+    height: auto;                 /* 🔑 */
+    max-height: 90vh;             /* 🔑 */
+    overflow-y: auto;             /* 🔑 */
+    border-radius: 16px;
+    background-size: cover;
+  }
+
+  .close {
+    top: 10px;
+    right: 14px;
+    font-size: 24px;
+  }
+
+  /* Titre */
+  .ticket-title {
+    position: relative;
+    top: 0;
+    left: 0;
+    padding: 16px 20px 0;
+    font-size: 20px;
+    text-align: center;
+  }
+
+  /* Sections deviennent normales */
+  .ticket-section {
+    position: relative;
+    left: auto;
+    right: auto;
+    top: auto;
+    padding: 14px 20px;
+    font-size: 14px;
+  }
+
+  .ticket-section.description,
+  .ticket-section.tech,
+  .ticket-section.demo {
+    padding-left: 20px;
+  }
+
+  .ticket-section.tech ul {
+    padding-left: 18px;
+  }
+
+  /* Boutons vidéo */
+  .youtube-btn {
+    margin: 10px auto;
+    display: block;
+    width: fit-content;
+  }
+}
 
 </style>
 </head>
@@ -463,5 +524,6 @@ function goBack() {
 
 </body>
 </html>
+
 
 
