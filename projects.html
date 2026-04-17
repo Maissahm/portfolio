@@ -158,7 +158,8 @@ body {
 
 </style>
 </head>
-  <body>
+
+<body>
 
 <div class="overlay"></div>
 <div class="center-text" id="centerText">
@@ -169,10 +170,7 @@ body {
 <div class="suitcase" id="s2" onclick="openProject(2)"></div>
 <div class="suitcase" id="s3" onclick="openProject(3)"></div>
 <div class="suitcase" id="s4" onclick="openProject(4)"></div>
-
-<!-- ✅ SEULE MODIFICATION ICI -->
-<div class="suitcase" id="s5" onclick="openProject(4)"></div>
-
+<div class="suitcase" id="s5" onclick="openProject(5)"></div>
 <button class="back-btn" onclick="goBack()" id="backBtn">← Back</button>
 
 
@@ -224,7 +222,8 @@ document.getElementById("backBtn").innerText =
 function openProject(id) {
    document.getElementById("centerText").style.opacity = "0";
 
-1: {
+const projects = {
+  1: {
     title: "Split Shores",
     description_en:
       "Split Shores is an adventure video game designed for all ages. Players explore multiple levels with unique environments, enemies and puzzles.",
@@ -244,28 +243,29 @@ function openProject(id) {
     video: "https://youtu.be/tgV_ufYuCWc"
   },
 
-  3: {
-    title: "حويتة",
-    description_en:
-      "Embedded system project for automating the maintenance of an intelligent aquarium.",
-    description_fr:
-      "Projet embarqué dédié à l’automatisation de l’entretien d’un aquarium intelligent.",
-    tech: ["MikroC", "Proteus ISIS", "MPLAB"],
-    videos: [
-      "https://youtu.be/wKviLW0Jd-U",
-      "https://youtu.be/NaFiM1qbRIk"
-    ]
-  },
+ 3: {
+  title: "حويتة",
+  description_en:
+    "Embedded system project for automating the maintenance of an intelligent aquarium.",
+  description_fr:
+    "Projet embarqué dédié à l’automatisation de l’entretien d’un aquarium intelligent.",
+  tech: ["MikroC", "Proteus ISIS", "MPLAB"],
+  videos: [
+    "https://youtu.be/wKviLW0Jd-U",
+    "https://youtu.be/NaFiM1qbRIk"
+  ]
+},
 
-  4: {
-    title: "ZigooCare",
-    description_en:
-      "ZigooCare is a healthcare project developed with C++ and Qt.",
-    description_fr:
-      "ZigooCare est un projet de santé développé avec C++ et Qt.",
-    tech: ["C++", "Qt"]
-  }
+5: {
+  title: "ZigooCare",
+  description_en:
+    "ZigooCare is a healthcare project developed with C++ and Qt.",
+  description_fr:
+    "ZigooCare est un projet de santé développé avec C++ et Qt.",
+  tech: ["C++", "Qt"]
+}
 };
+
   
 
   const p = projects[id];
