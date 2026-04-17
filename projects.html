@@ -268,7 +268,8 @@ const projects = {
 
   
 
-  const p = projects[id];
+ const p = projects[id];
+if (!p) return;
 
   document.getElementById("projectTitle").innerText = p.title;
 document.getElementById("projectDescription").innerText =
