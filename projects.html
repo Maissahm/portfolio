@@ -6,6 +6,7 @@
 <title>Choose a suitcase</title>
 
 <style>
+
 body {
   margin: 0;
   height: 100vh;
@@ -14,12 +15,14 @@ body {
   overflow-x: hidden;
 }
 
+/* ================= SCENE ================= */
 .scene {
   position: relative;
   width: 100%;
   height: 100vh;
 }
 
+/* ================= OVERLAY ================= */
 .overlay {
   position: absolute;
   inset: 0;
@@ -27,6 +30,7 @@ body {
   pointer-events: none;
 }
 
+/* ================= SUITCASES ================= */
 .suitcase {
   position: absolute;
   width: 200px;
@@ -43,18 +47,21 @@ body {
   box-shadow: 0 15px 30px rgba(0,0,0,.25);
 }
 
+/* positions desktop */
 #s1 { top: 5%; left: 16%; }
 #s2 { top: 15%; left: 40%; }
 #s3 { top: 36%; left: 70%; }
 #s4 { top: 54%; left: 16%; }
 #s5 { top: 73%; left: 60%; }
 
+/* animations */
 @keyframes float {
   0% { transform: translateY(0); }
   50% { transform: translateY(-6px); }
   100% { transform: translateY(0); }
 }
 
+/* ================= CENTER TEXT ================= */
 .center-text {
   position: absolute;
   top: 50%;
@@ -71,6 +78,7 @@ body {
   pointer-events: none;
 }
 
+/* ================= BACK BUTTON ================= */
 .back-btn {
   position: absolute;
   top: 20px;
@@ -83,6 +91,7 @@ body {
   cursor: pointer;
 }
 
+/* ================= MODAL ================= */
 .modal {
   display: none;
   position: fixed;
@@ -92,6 +101,7 @@ body {
   align-items: center;
 }
 
+/* ================= TICKET ================= */
 .ticket {
   background: url("ticket-bg.png") center/cover no-repeat;
   width: 90%;
@@ -100,13 +110,58 @@ body {
   border-radius: 20px;
   position: relative;
 }
+
+/* ================= MOBILE FIX ================= */
+@media (max-width: 768px) {
+
+  body {
+    background: none;
+    height: auto;
+  }
+
+  .scene {
+    aspect-ratio: 9 / 16;
+    background: url("suitcases-bg.png") center / contain no-repeat;
+    background-color: #000;
+  }
+
+  .center-text {
+    font-size: 18px;
+    width: 90%;
+  }
+
+  .suitcase {
+    width: 120px;
+    height: 90px;
+  }
+
+  /* positions mobile RELATIVES À L’IMAGE */
+  #s1 { top: 12%; left: 12%; }
+  #s2 { top: 22%; left: 58%; }
+  #s3 { top: 40%; left: 20%; }
+  #s4 { top: 58%; left: 62%; }
+  #s5 { top: 75%; left: 32%; }
+
+  .back-btn {
+    position: fixed;
+    top: 12px;
+    left: 12px;
+    z-index: 10;
+  }
+
+  .ticket {
+    height: auto;
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+}
+
 </style>
 </head>
 
 <body>
 
 <div class="overlay"></div>
-
 <div class="center-text" id="centerText">
   Pick a bag to see one of my projects
 </div>
@@ -116,52 +171,88 @@ body {
 <div class="suitcase" id="s3" onclick="openProject(3)"></div>
 <div class="suitcase" id="s4" onclick="openProject(4)"></div>
 
-<!-- ✅ corrigé ici -->
+<!-- ✅ SEULE MODIFICATION ICI -->
 <div class="suitcase" id="s5" onclick="openProject(4)"></div>
 
 <button class="back-btn" onclick="goBack()" id="backBtn">← Back</button>
 
+
+<!-- MODAL -->
 <div class="modal" id="projectModal">
   <div class="ticket">
 
-    <span onclick="closeModal()" style="position:absolute;top:10px;right:20px;cursor:pointer;font-size:24px;color:white;">×</span>
+    <span class="close" onclick="closeModal()">×</span>
 
-    <h2 id="projectTitle"></h2>
+    <div class="ticket-title" id="projectTitle"></div>
 
-    <p id="projectDescription"></p>
+    <div class="ticket-section description">
+      <p id="projectDescription"></p>
+    </div>
 
-    <ul id="projectTech"></ul>
+    <div class="ticket-section tech">
+      <ul id="projectTech"></ul>
+    </div>
 
-    <div id="projectDemo"></div>
+<div class="ticket-section demo" id="projectDemo"></div>
+
 
   </div>
 </div>
 
 <script>
-const currentLang = localStorage.getItem("portfolioLang") || "en";
+  const currentLang = localStorage.getItem("portfolioLang") || "en";
+
+const uiText = {
+  en: {
+    center: "Pick a bag to see one of my projects",
+    back: "← Back",
+    watch: "▶ Watch on YouTube",
+    watchVideo: "▶ Watch video"
+  },
+  fr: {
+    center: "Choisissez une valise pour découvrir un projet",
+    back: "← Retour",
+    watch: "▶ Voir sur YouTube",
+    watchVideo: "▶ Voir la vidéo"
+  }
+};
+document.getElementById("centerText").innerText =
+  uiText[currentLang].center;
+
+document.getElementById("backBtn").innerText =
+  uiText[currentLang].back;
+
+function openProject(id) {
+   document.getElementById("centerText").style.opacity = "0";
 
 const projects = {
   1: {
     title: "Split Shores",
-    description_en: "Adventure game with multiple levels and puzzles.",
-    description_fr: "Jeu d’aventure avec plusieurs niveaux et énigmes.",
-    tech: ["C", "SDL"],
-    video: "https://youtu.be/cb2VBAir7X4"
+    description_en:
+      "Split Shores is an adventure video game designed for all ages. Players explore multiple levels with unique environments, enemies and puzzles.",
+    description_fr:
+      "Split Shores est un jeu vidéo d’aventure conçu pour tous les âges. Le joueur explore plusieurs niveaux avec des environnements uniques, des ennemis et des énigmes.",
+    tech: ["C", "SDL 1.2"],
+    video: "https://youtu.be/cb2VBAir7X4?si=txO0yqe4KREmOa_Y"
   },
 
   2: {
     title: "G4S",
-    description_en: "Social impact streaming platform.",
-    description_fr: "Plateforme de streaming à impact social.",
-    tech: ["JS", "NodeJS"],
+    description_en:
+      "G4S is a social impact streaming platform where streamers, viewers and associations collaborate to fund meaningful projects live.",
+    description_fr:
+      "G4S est une plateforme de streaming à impact social où streamers, viewers et associations collaborent pour financer des projets solidaires.",
+    tech: ["JavaScript", "HTML5", "CSS", "NodeJS", "Socket.io"],
     video: "https://youtu.be/tgV_ufYuCWc"
   },
 
   3: {
-    title: "Aquarium",
-    description_en: "Smart aquarium automation system.",
-    description_fr: "Système intelligent pour aquarium.",
-    tech: ["MikroC"],
+    title: "حويتة",
+    description_en:
+      "Embedded system project for automating the maintenance of an intelligent aquarium.",
+    description_fr:
+      "Projet embarqué dédié à l’automatisation de l’entretien d’un aquarium intelligent.",
+    tech: ["MikroC", "Proteus ISIS", "MPLAB"],
     videos: [
       "https://youtu.be/wKviLW0Jd-U",
       "https://youtu.be/NaFiM1qbRIk"
@@ -170,25 +261,21 @@ const projects = {
 
   4: {
     title: "ZigooCare",
-    description_en: "Healthcare app built with C++ and Qt.",
-    description_fr: "Application de santé développée avec C++ et Qt.",
+    description_en:
+      "ZigooCare is a healthcare project developed with C++ and Qt.",
+    description_fr:
+      "ZigooCare est un projet de santé développé avec C++ et Qt.",
     tech: ["C++", "Qt"]
   }
 };
-
-function openProject(id) {
+  
 
   const p = projects[id];
 
-  // ✅ sécurité (important)
-  if (!p) return;
-
-  document.getElementById("centerText").style.opacity = "0";
-
   document.getElementById("projectTitle").innerText = p.title;
+document.getElementById("projectDescription").innerText =
+  currentLang === "fr" ? p.description_fr : p.description_en;
 
-  document.getElementById("projectDescription").innerText =
-    currentLang === "fr" ? p.description_fr : p.description_en;
 
   const tech = document.getElementById("projectTech");
   tech.innerHTML = "";
@@ -198,25 +285,29 @@ function openProject(id) {
     tech.appendChild(li);
   });
 
-  const demo = document.getElementById("projectDemo");
-  demo.innerHTML = "";
+const demo = document.getElementById("projectDemo");
+demo.innerHTML = "";
 
-  if (p.videos) {
-    p.videos.forEach((v, i) => {
-      const a = document.createElement("a");
-      a.href = v;
-      a.target = "_blank";
-      a.innerText = "▶ Video " + (i+1);
-      demo.appendChild(a);
-      demo.appendChild(document.createElement("br"));
-    });
-  } else if (p.video) {
+if (p.videos) {
+  p.videos.forEach((v, i) => {
     const a = document.createElement("a");
-    a.href = p.video;
+    a.href = v;
     a.target = "_blank";
-    a.innerText = "▶ Watch";
+    a.className = "youtube-btn";
+  a.innerText = `${uiText[currentLang].watchVideo} ${i + 1}`;
+
     demo.appendChild(a);
-  }
+  });
+} else if (p.video) {
+  const a = document.createElement("a");
+  a.href = p.video;
+  a.target = "_blank";
+  a.className = "youtube-btn";
+ a.innerText = uiText[currentLang].watch;
+
+  demo.appendChild(a);
+}
+
 
   document.getElementById("projectModal").style.display = "flex";
 }
@@ -225,6 +316,7 @@ function closeModal() {
   document.getElementById("projectModal").style.display = "none";
   document.getElementById("centerText").style.opacity = "1";
 }
+
 
 function goBack() {
   window.location.href = "index.html";
