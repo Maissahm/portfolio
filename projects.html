@@ -2,14 +2,16 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Choose a suitcase</title>
 
 <style>
+* { box-sizing: border-box; }
+
+html, body { margin: 0; min-height: 100%; }
 
 body {
-  margin: 0;
-  height: 100vh;
+  min-height: 100vh;
   background: url("suitcases-bg.png") center/cover no-repeat;
   font-family: "Segoe UI", Arial, sans-serif;
   overflow-x: hidden;
@@ -24,15 +26,17 @@ body {
 
 /* ================= OVERLAY ================= */
 .overlay {
-  position: absolute;
+  position: fixed;
   inset: 0;
   background: rgba(0,0,0,0.15);
   pointer-events: none;
+  z-index: 1;
 }
 
 /* ================= SUITCASES ================= */
 .suitcase {
   position: absolute;
+  z-index: 2;
   width: 200px;
   height: 150px;
   cursor: pointer;
@@ -54,11 +58,9 @@ body {
 #s4 { top: 54%; left: 16%; }
 #s5 { top: 73%; left: 60%; }
 
-/* animations */
 @keyframes float {
-  0% { transform: translateY(0); }
+  0%, 100% { transform: translateY(0); }
   50% { transform: translateY(-6px); }
-  100% { transform: translateY(0); }
 }
 
 /* ================= CENTER TEXT ================= */
@@ -72,245 +74,655 @@ body {
   font-weight: 600;
   color: white;
   text-align: center;
-  background: rgba(0,0,0,.45);
+  background: rgba(0,0,0,.48);
   padding: 16px 28px;
   border-radius: 14px;
   pointer-events: none;
+  transition: opacity .2s ease;
+  backdrop-filter: blur(4px);
 }
 
 /* ================= BACK BUTTON ================= */
 .back-btn {
   position: absolute;
+  z-index: 4;
   top: 20px;
   left: 20px;
   padding: 10px 18px;
-  background: rgba(0,0,0,.6);
+  background: rgba(0,0,0,.65);
   color: white;
   border-radius: 8px;
-  border: none;
+  border: 1px solid rgba(255,255,255,.2);
   cursor: pointer;
+  font-size: 15px;
 }
+
+.back-btn:hover { background: rgba(0,0,0,.8); }
 
 /* ================= MODAL ================= */
 .modal {
   display: none;
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,.7);
+  z-index: 9999;
+  background: rgba(0,0,0,.72);
   justify-content: center;
   align-items: center;
+  padding: 24px;
+  backdrop-filter: blur(3px);
 }
 
-/* ================= TICKET ================= */
+/* ================= BOARDING PASS ================= */
 .ticket {
-  background: url("ticket-bg.png") center/cover no-repeat;
-  width: 90%;
-  max-width: 900px;
-  height: 420px;
-  border-radius: 20px;
   position: relative;
+  width: min(94vw, 1000px);
+  aspect-ratio: 900 / 420;
+  background: url("ticket-bg.png") center/100% 100% no-repeat;
+  border-radius: 20px;
+  overflow: hidden;
+  filter: drop-shadow(0 24px 50px rgba(0,0,0,.35));
+  animation: ticketIn .22s ease-out;
 }
 
-/* ================= MOBILE FIX ================= */
-@media (max-width: 768px) {
+@keyframes ticketIn {
+  from { transform: translateY(14px) scale(.98); opacity: 0; }
+  to { transform: translateY(0) scale(1); opacity: 1; }
+}
 
-  body {
-    background: none;
-    height: auto;
+.close {
+  position: absolute;
+  top: 3.5%;
+  right: 2.3%;
+  z-index: 20;
+  width: 38px;
+  height: 38px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: rgba(255,255,255,.82);
+  color: #1d2630;
+  font-size: 28px;
+  line-height: 1;
+  cursor: pointer;
+  box-shadow: 0 3px 12px rgba(0,0,0,.14);
+  transition: transform .18s, background .18s;
+}
+
+.close:hover {
+  transform: scale(1.08);
+  background: #fff;
+}
+
+.ticket-title {
+  position: absolute;
+  left: 8.2%;
+  top: 5.5%;
+  width: 76%;
+  color: #15212d;
+  font-size: clamp(18px, 2vw, 29px);
+  font-weight: 750;
+  line-height: 1.05;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ticket-section {
+  position: absolute;
+  left: 8.2%;
+  width: 59%;
+  color: #17212b;
+}
+
+.ticket-section.description {
+  top: 33.2%;
+  height: 11.8%;
+  padding-right: 8px;
+  display: flex;
+  align-items: flex-start;
+}
+
+.ticket-section.description p {
+  margin: 0;
+  font-size: clamp(11px, 1.08vw, 14px);
+  line-height: 1.42;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.ticket-section.tech {
+  top: 53.8%;
+  height: 10%;
+  display: flex;
+  align-items: flex-start;
+  padding-top: 4px;
+}
+
+#projectTech {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+#projectTech li {
+  font-size: clamp(10px, 1.05vw, 13px);
+  font-weight: 650;
+  padding: 5px 10px;
+  border: 1px solid rgba(35,109,155,.32);
+  border-radius: 999px;
+  background: rgba(255,255,255,.64);
+  color: #215f87;
+}
+
+.ticket-section.demo {
+  top: 75.8%;
+  height: 12%;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  flex-wrap: wrap;
+  padding-top: 4px;
+}
+
+#projectDemo {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.youtube-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 34px;
+  padding: 8px 14px;
+  border-radius: 8px;
+  background: #1f6f9e;
+  color: white;
+  text-decoration: none;
+  font-size: clamp(10px, 1.05vw, 13px);
+  font-weight: 700;
+  box-shadow: 0 5px 12px rgba(31,111,158,.18);
+  transition: transform .18s, filter .18s;
+}
+
+.youtube-btn:hover {
+  transform: translateY(-2px);
+  filter: brightness(.95);
+}
+
+.mobile-label { display: none; }
+.ticket-section[hidden] { display: none !important; }
+
+.coming-soon {
+  color: #345;
+  font-weight: 650;
+}
+
+/* ================= MOBILE / TABLET ================= */
+@media (max-width: 768px) {
+  html, body {
+    min-height: 100%;
+    background: #071317;
   }
 
+  body {
+    min-height: 100svh;
+    overflow-x: hidden;
+  }
+
+  /* Mobile uses a reliable project list instead of invisible click zones
+     over the desktop artwork. The airport/suitcase identity is preserved. */
   .scene {
-    aspect-ratio: 9 / 16;
-    background: url("suitcases-bg.png") center / contain no-repeat;
-    background-color: #000;
+    min-height: 100svh;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding:
+      calc(82px + env(safe-area-inset-top))
+      18px
+      calc(28px + env(safe-area-inset-bottom));
+    background:
+      linear-gradient(rgba(4,18,22,.56), rgba(4,18,22,.78)),
+      url("suitcases-bg.png") center / cover no-repeat;
+  }
+
+  .overlay {
+    position: fixed;
+    background: rgba(0,0,0,.12);
   }
 
   .center-text {
-    font-size: 18px;
-    width: 90%;
+    position: static;
+    transform: none;
+    width: 100%;
+    margin: 0 0 8px;
+    padding: 14px 16px;
+    font-size: clamp(17px, 5vw, 21px);
+    line-height: 1.25;
+    border-radius: 16px;
+    background: rgba(0,0,0,.56);
+    backdrop-filter: blur(8px);
   }
 
-  .suitcase {
-    width: 120px;
-    height: 90px;
+  .suitcase,
+  #s1, #s2, #s3, #s4, #s5 {
+    position: relative;
+    top: auto;
+    left: auto;
+    width: 100%;
+    height: 70px;
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 0 18px;
+    border-radius: 18px;
+    border: 1px solid rgba(255,255,255,.22);
+    background: rgba(10,25,30,.76);
+    box-shadow: 0 10px 28px rgba(0,0,0,.2);
+    color: #fff;
+    animation: none;
+    transform: none;
+    -webkit-tap-highlight-color: transparent;
   }
 
-  /* positions mobile RELATIVES À L’IMAGE */
-  #s1 { top: 12%; left: 12%; }
-  #s2 { top: 22%; left: 58%; }
-  #s3 { top: 40%; left: 20%; }
-  #s4 { top: 58%; left: 62%; }
-  #s5 { top: 75%; left: 32%; }
+  .suitcase::before {
+    content: "🧳";
+    flex: 0 0 auto;
+    font-size: 29px;
+    line-height: 1;
+  }
+
+  .suitcase::after {
+    content: attr(data-title);
+    min-width: 0;
+    flex: 1;
+    font-size: 16px;
+    line-height: 1.2;
+    font-weight: 750;
+    letter-spacing: .1px;
+    white-space: normal;
+  }
+
+  .suitcase:hover,
+  .suitcase:active {
+    animation: none;
+    transform: none;
+    box-shadow: 0 10px 28px rgba(0,0,0,.2);
+  }
+
+  .suitcase:active {
+    background: rgba(31,111,158,.88);
+  }
 
   .back-btn {
     position: fixed;
-    top: 12px;
+    top: calc(12px + env(safe-area-inset-top));
     left: 12px;
-    z-index: 10;
+    z-index: 30;
+    min-height: 44px;
+    padding: 10px 15px;
+    border-radius: 12px;
+    backdrop-filter: blur(8px);
   }
 
+  .modal {
+    padding: 12px;
+    padding-bottom: calc(12px + env(safe-area-inset-bottom));
+    align-items: flex-end;
+    overflow: hidden;
+  }
+
+  /* Vertical boarding pass / bottom sheet on phones. */
   .ticket {
-    height: auto;
-    max-height: 90vh;
+    width: 100%;
+    max-width: 520px;
+    aspect-ratio: auto;
+    max-height: 91svh;
     overflow-y: auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+    background:
+      linear-gradient(rgba(247,243,233,.96), rgba(247,243,233,.96)),
+      url("ticket-bg.png") center / cover no-repeat;
+    border: 1px solid rgba(31,111,158,.2);
+    border-radius: 24px 24px 16px 16px;
+    padding: 72px 20px 26px;
+    filter: drop-shadow(0 18px 36px rgba(0,0,0,.35));
+  }
+
+  .ticket::before {
+    content: "✈  BOARDING PASS";
+    position: absolute;
+    left: 20px;
+    top: 24px;
+    right: 72px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid rgba(31,111,158,.22);
+    color: #1f6f9e;
+    font-weight: 850;
+    letter-spacing: .9px;
+    font-size: 12px;
+  }
+
+  .close {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    width: 44px;
+    height: 44px;
+    font-size: 28px;
+    background: rgba(255,255,255,.94);
+  }
+
+  .ticket-title,
+  .ticket-section {
+    position: static;
+    width: auto;
+    height: auto;
+  }
+
+  .ticket-title {
+    margin: 0 0 18px;
+    color: #15212d;
+    font-size: clamp(23px, 7vw, 30px);
+    line-height: 1.12;
+    white-space: normal;
+    overflow: visible;
+    text-overflow: clip;
+    overflow-wrap: anywhere;
+  }
+
+  .ticket-section {
+    display: block !important;
+    margin-top: 15px;
+    padding: 12px 0 0;
+    border-top: 3px solid #1f6f9e;
+  }
+
+  .ticket-section.description {
+    margin-top: 0;
+  }
+
+  .mobile-label {
+    display: block;
+    margin-bottom: 9px;
+    color: #1f6f9e;
+    font-size: 11px;
+    font-weight: 850;
+    letter-spacing: .8px;
+    text-transform: uppercase;
+  }
+
+  .ticket-section.description p {
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.48;
+    display: block;
+    overflow: visible;
+    -webkit-line-clamp: unset;
+  }
+
+  #projectTech {
+    gap: 7px;
+  }
+
+  #projectTech li {
+    font-size: 12px;
+    padding: 6px 10px;
+    background: rgba(255,255,255,.85);
+  }
+
+  .ticket-section.demo {
+    gap: 8px;
+  }
+
+  #projectDemo {
+    width: 100%;
+    gap: 8px;
+  }
+
+  .youtube-btn {
+    min-height: 44px;
+    padding: 10px 13px;
+    font-size: 12px;
+    border-radius: 10px;
   }
 }
 
+/* Small phones */
+@media (max-width: 390px) {
+  .scene {
+    gap: 10px;
+    padding-left: 14px;
+    padding-right: 14px;
+  }
+
+  .suitcase,
+  #s1, #s2, #s3, #s4, #s5 {
+    height: 64px;
+    padding: 0 14px;
+  }
+
+  .suitcase::before { font-size: 25px; }
+  .suitcase::after { font-size: 14px; }
+
+  .ticket {
+    padding-left: 17px;
+    padding-right: 17px;
+  }
+
+  .youtube-btn {
+    width: 100%;
+  }
+}
 </style>
 </head>
 
 <body>
+<div class="scene">
+  <div class="overlay"></div>
+  <div class="center-text" id="centerText">Pick a bag to see one of my projects</div>
 
-<div class="overlay"></div>
-<div class="center-text" id="centerText">
-  Pick a bag to see one of my projects
+  <div class="suitcase" id="s1" data-title="Split Shores" onclick="openProject(1)" aria-label="Split Shores"></div>
+  <div class="suitcase" id="s2" data-title="G4S" onclick="openProject(2)" aria-label="G4S"></div>
+  <div class="suitcase" id="s3" data-title="حويتة" onclick="openProject(3)" aria-label="حويتة"></div>
+  <div class="suitcase" id="s4" data-title="Zigoocare" onclick="openProject(4)" aria-label="Zigoocare"></div>
+  <div class="suitcase" id="s5" data-title="AI Troubleshooting Copilot" onclick="openProject(5)" aria-label="AI Troubleshooting Copilot"></div>
+
+  <button class="back-btn" onclick="goBack()" id="backBtn">← Back</button>
 </div>
 
-<div class="suitcase" id="s1" onclick="openProject(1)"></div>
-<div class="suitcase" id="s2" onclick="openProject(2)"></div>
-<div class="suitcase" id="s3" onclick="openProject(3)"></div>
-<div class="suitcase" id="s4" onclick="openProject(4)"></div>
-<div class="suitcase" id="s5" onclick="openProject(5)"></div>
-<button class="back-btn" onclick="goBack()" id="backBtn">← Back</button>
-
-
-<!-- MODAL -->
-<div class="modal" id="projectModal">
+<!-- PROJECT MODAL -->
+<div class="modal" id="projectModal" role="dialog" aria-modal="true" aria-labelledby="projectTitle">
   <div class="ticket">
-
-    <span class="close" onclick="closeModal()">×</span>
+    <span class="close" onclick="closeModal()" aria-label="Close">×</span>
 
     <div class="ticket-title" id="projectTitle"></div>
 
     <div class="ticket-section description">
+      <span class="mobile-label" id="descriptionLabel">Description</span>
       <p id="projectDescription"></p>
     </div>
 
     <div class="ticket-section tech">
+      <span class="mobile-label" id="techLabel">Technologies used</span>
       <ul id="projectTech"></ul>
     </div>
 
-<div class="ticket-section demo" id="projectDemo"></div>
-
-
+    <div class="ticket-section demo" id="projectDemoWrap">
+      <span class="mobile-label" id="demoLabel">Demo</span>
+      <div id="projectDemo"></div>
+    </div>
   </div>
 </div>
 
 <script>
-  const currentLang = localStorage.getItem("portfolioLang") || "en";
+const currentLang = localStorage.getItem("portfolioLang") || "en";
 
 const uiText = {
   en: {
     center: "Pick a bag to see one of my projects",
     back: "← Back",
     watch: "▶ Watch on YouTube",
-    watchVideo: "▶ Watch video"
+    watchVideo: "▶ Watch video",
+    description: "Description",
+    tech: "Technologies used",
+    demo: "Demo",
+    comingTitle: "Coming soon",
+    comingDescription: "This project is still being prepared. Check back soon!"
   },
   fr: {
     center: "Choisissez une valise pour découvrir un projet",
     back: "← Retour",
     watch: "▶ Voir sur YouTube",
-    watchVideo: "▶ Voir la vidéo"
+    watchVideo: "▶ Voir la vidéo",
+    description: "Description",
+    tech: "Technologies utilisées",
+    demo: "Démo",
+    comingTitle: "Bientôt disponible",
+    comingDescription: "Ce projet est encore en préparation. Revenez bientôt !"
   }
 };
-document.getElementById("centerText").innerText =
-  uiText[currentLang].center;
-
-document.getElementById("backBtn").innerText =
-  uiText[currentLang].back;
-
-function openProject(id) {
-   document.getElementById("centerText").style.opacity = "0";
 
 const projects = {
   1: {
     title: "Split Shores",
-    description_en:
-      "Split Shores is an adventure video game designed for all ages. Players explore multiple levels with unique environments, enemies and puzzles.",
-    description_fr:
-      "Split Shores est un jeu vidéo d’aventure conçu pour tous les âges. Le joueur explore plusieurs niveaux avec des environnements uniques, des ennemis et des énigmes.",
+    description_en: "Split Shores is an adventure video game designed for all ages. Players explore multiple levels with unique environments, enemies and puzzles.",
+    description_fr: "Split Shores est un jeu vidéo d’aventure conçu pour tous les âges. Le joueur explore plusieurs niveaux avec des environnements uniques, des ennemis et des énigmes.",
     tech: ["C", "SDL 1.2"],
     video: "https://youtu.be/cb2VBAir7X4?si=txO0yqe4KREmOa_Y"
   },
-
   2: {
     title: "G4S",
-    description_en:
-      "G4S is a social impact streaming platform where streamers, viewers and associations collaborate to fund meaningful projects live.",
-    description_fr:
-      "G4S est une plateforme de streaming à impact social où streamers, viewers et associations collaborent pour financer des projets solidaires.",
+    description_en: "G4S is a social impact streaming platform where streamers, viewers and associations collaborate to fund meaningful projects live.",
+    description_fr: "G4S est une plateforme de streaming à impact social où streamers, viewers et associations collaborent pour financer des projets solidaires.",
     tech: ["JavaScript", "HTML5", "CSS", "NodeJS", "Socket.io"],
     video: "https://youtu.be/tgV_ufYuCWc"
   },
-
   3: {
     title: "حويتة",
-    description_en:
-      "Embedded system project for automating the maintenance of an intelligent aquarium.",
-    description_fr:
-      "Projet embarqué dédié à l’automatisation de l’entretien d’un aquarium intelligent.",
+    description_en: "Embedded system project for automating the maintenance of an intelligent aquarium.",
+    description_fr: "Projet embarqué dédié à l’automatisation de l’entretien d’un aquarium intelligent.",
     tech: ["MikroC", "Proteus ISIS", "MPLAB"],
     videos: [
       "https://youtu.be/wKviLW0Jd-U",
       "https://youtu.be/NaFiM1qbRIk"
     ]
+  },
+  4: {
+    title: "Zigoocare",
+    description_en: "Zigoocare is a smart flood prevention and monitoring solution designed to anticipate flooding risks and support municipalities in taking preventive action.",
+    description_fr: "Zigoocare est une solution intelligente de prévention et de suivi des inondations, conçue pour anticiper les risques et aider les municipalités à agir de manière préventive.",
+    tech: ["C++", "Qt", "Python", "Oracle", "Arduino"],
+    video: "https://youtu.be/rbuJg9_fYeA?si=9fEo-da-FAUgr_Ef"
+  },
+  5: {
+    title: "AI Troubleshooting Copilot",
+    description_en: "AI assistant for OpenShift that analyzes cluster metrics and logs to identify application issues and suggest corrective actions.",
+    description_fr: "Assistant IA pour OpenShift qui analyse les métriques et les logs du cluster afin d’identifier les problèmes applicatifs et de proposer des actions correctives.",
+    tech: ["FastAPI", "OpenShift", "Prometheus", "Loki", "Python"]
   }
 };
 
-  
+const modal = document.getElementById("projectModal");
+const centerText = document.getElementById("centerText");
+
+document.getElementById("centerText").innerText = uiText[currentLang].center;
+document.getElementById("backBtn").innerText = uiText[currentLang].back;
+document.getElementById("descriptionLabel").innerText = uiText[currentLang].description;
+document.getElementById("techLabel").innerText = uiText[currentLang].tech;
+document.getElementById("demoLabel").innerText = uiText[currentLang].demo;
+
+function openProject(id) {
+  centerText.style.opacity = "0";
 
   const p = projects[id];
-
-  document.getElementById("projectTitle").innerText = p.title;
-document.getElementById("projectDescription").innerText =
-  currentLang === "fr" ? p.description_fr : p.description_en;
-
-
+  const title = document.getElementById("projectTitle");
+  const description = document.getElementById("projectDescription");
   const tech = document.getElementById("projectTech");
+  const demo = document.getElementById("projectDemo");
+  const demoWrap = document.getElementById("projectDemoWrap");
+
   tech.innerHTML = "";
+  demo.innerHTML = "";
+  demoWrap.hidden = true;
+
+  // Fallback placeholder if a future suitcase has no project yet.
+  if (!p) {
+    title.innerText = uiText[currentLang].comingTitle;
+    description.innerText = uiText[currentLang].comingDescription;
+    const li = document.createElement("li");
+    li.className = "coming-soon";
+    li.textContent = "…";
+    tech.appendChild(li);
+    modal.style.display = "flex";
+    document.body.style.overflow = "hidden";
+    return;
+  }
+
+  title.innerText = p.title;
+  description.innerText = currentLang === "fr" ? p.description_fr : p.description_en;
+
   p.tech.forEach(t => {
     const li = document.createElement("li");
     li.textContent = t;
     tech.appendChild(li);
   });
 
-const demo = document.getElementById("projectDemo");
-demo.innerHTML = "";
-
-if (p.videos) {
-  p.videos.forEach((v, i) => {
+  if (p.videos) {
+    p.videos.forEach((v, i) => {
+      const a = document.createElement("a");
+      a.href = v;
+      a.target = "_blank";
+      a.rel = "noopener noreferrer";
+      a.className = "youtube-btn";
+      a.innerText = `${uiText[currentLang].watchVideo} ${i + 1}`;
+      demo.appendChild(a);
+    });
+    demoWrap.hidden = false;
+  } else if (p.video) {
     const a = document.createElement("a");
-    a.href = v;
+    a.href = p.video;
     a.target = "_blank";
+    a.rel = "noopener noreferrer";
     a.className = "youtube-btn";
-  a.innerText = `${uiText[currentLang].watchVideo} ${i + 1}`;
-
+    a.innerText = uiText[currentLang].watch;
     demo.appendChild(a);
-  });
-} else if (p.video) {
-  const a = document.createElement("a");
-  a.href = p.video;
-  a.target = "_blank";
-  a.className = "youtube-btn";
- a.innerText = uiText[currentLang].watch;
+    demoWrap.hidden = false;
+  }
 
-  demo.appendChild(a);
-}
-
-
-  document.getElementById("projectModal").style.display = "flex";
+  modal.style.display = "flex";
+  document.body.style.overflow = "hidden";
 }
 
 function closeModal() {
-  document.getElementById("projectModal").style.display = "none";
-  document.getElementById("centerText").style.opacity = "1";
+  modal.style.display = "none";
+  centerText.style.opacity = "1";
+  document.body.style.overflow = "";
 }
-
 
 function goBack() {
   window.location.href = "index.html";
 }
-</script>
 
+// Close when clicking outside the ticket.
+modal.addEventListener("click", (e) => {
+  if (e.target === modal) closeModal();
+});
+
+// Close with Escape.
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape" && modal.style.display === "flex") closeModal();
+});
+</script>
 </body>
 </html>
