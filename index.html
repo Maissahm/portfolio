@@ -236,46 +236,62 @@
     background: #05090b;
   }
 
+  /* IMPORTANT: on mobile the image is no longer used as a full-screen
+     absolute background. It keeps its natural aspect ratio, therefore
+     absolutely no part of the original image is cropped. */
   .hero {
     min-height: 100svh;
-  }
-
-  /* Mobile: show the complete background image without cropping it */
-  .hero-bg {
-    object-fit: contain;
-    object-position: top center;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    overflow: visible;
     background: #05090b;
   }
 
-  /* Blend the intact image into the dark area used by the buttons */
+  .hero-bg {
+    position: relative;
+    inset: auto;
+    width: 100%;
+    height: auto;
+    max-width: 100%;
+    display: block;
+    object-fit: unset;
+    object-position: unset;
+    flex: 0 0 auto;
+    z-index: 0;
+  }
+
+  /* The text is no longer placed behind the image. */
   .overlay {
-    background: linear-gradient(
-      to bottom,
-      rgba(0,0,0,.12) 0%,
-      rgba(0,0,0,.18) 34%,
-      rgba(5,9,11,.72) 58%,
-      rgba(5,9,11,.94) 100%
-    );
+    display: none;
   }
 
   .content {
-    min-height: 100svh;
-    align-items: flex-end;
+    position: relative;
+    min-height: auto;
+    width: 100%;
+    align-items: center;
     justify-content: center;
-    padding:
-      calc(88px + env(safe-area-inset-top))
-      18px
-      calc(34px + env(safe-area-inset-bottom));
+    padding: 0 18px calc(34px + env(safe-area-inset-bottom));
+    margin-top: -54px;
+    background: linear-gradient(
+      to bottom,
+      rgba(5,9,11,0) 0,
+      rgba(5,9,11,.90) 54px,
+      #05090b 120px
+    );
   }
 
   .text-box {
+    position: relative;
+    z-index: 2;
     width: 100%;
     max-width: 480px;
     padding: 20px;
     text-align: center;
     border: 1px solid rgba(255,255,255,.18);
     border-radius: 22px;
-    background: rgba(0,0,0,.48);
+    background: rgba(0,0,0,.70);
     backdrop-filter: blur(8px);
     box-shadow: 0 18px 40px rgba(0,0,0,.20);
   }
@@ -353,7 +369,7 @@
   .popup-content input,
   .popup-content textarea {
     min-height: 46px;
-    font-size: 16px; /* avoids iOS zoom on focus */
+    font-size: 16px;
   }
 
   .popup-content textarea {
@@ -375,6 +391,7 @@
     padding-left: 14px;
     padding-right: 14px;
     padding-bottom: calc(20px + env(safe-area-inset-bottom));
+    margin-top: -42px;
   }
 
   .text-box {
