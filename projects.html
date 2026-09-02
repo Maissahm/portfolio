@@ -257,6 +257,165 @@ body {
   filter: brightness(.95);
 }
 
+
+/* ================= FLIGHT TRANSITION ================= */
+.flight-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 9000;
+  display: none;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.flight-layer.active {
+  display: block;
+}
+
+.flight-shade {
+  position: absolute;
+  inset: 0;
+  background: rgba(2, 12, 18, .28);
+  backdrop-filter: blur(1.5px);
+  opacity: 0;
+  transition: opacity .22s ease;
+}
+
+.flight-layer.active .flight-shade {
+  opacity: 1;
+}
+
+.flight-route {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+#flightPath {
+  fill: none;
+  stroke: rgba(255, 255, 255, .78);
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-dasharray: 8 11;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,.25));
+}
+
+.flight-plane {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 54px;
+  height: 54px;
+  display: grid;
+  place-items: center;
+  transform: translate(-50%, -50%);
+  color: #fff;
+  font-size: 44px;
+  line-height: 1;
+  text-shadow:
+    0 2px 2px rgba(0,0,0,.25),
+    0 0 12px rgba(47, 151, 220, .95),
+    0 0 22px rgba(47, 151, 220, .55);
+  opacity: 0;
+  will-change: left, top, transform, opacity;
+}
+
+.flight-destination {
+  position: absolute;
+  left: 50%;
+  top: 21%;
+  transform: translate(-50%, -50%) scale(.94);
+  min-width: min(78vw, 350px);
+  max-width: min(84vw, 460px);
+  padding: 11px 18px 12px;
+  border: 1px solid rgba(255,255,255,.38);
+  border-radius: 999px;
+  background: rgba(5, 20, 28, .78);
+  box-shadow: 0 12px 30px rgba(0,0,0,.22);
+  backdrop-filter: blur(10px);
+  color: #fff;
+  text-align: center;
+  opacity: 0;
+  transition: opacity .28s ease, transform .28s ease;
+}
+
+.flight-layer.show-destination .flight-destination {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
+
+.flight-destination span {
+  display: block;
+  margin-bottom: 2px;
+  color: #a9dfff;
+  font-size: 10px;
+  font-weight: 850;
+  letter-spacing: 1.7px;
+  text-transform: uppercase;
+}
+
+.flight-destination strong {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: clamp(14px, 2.4vw, 19px);
+  letter-spacing: .2px;
+}
+
+.scene.flight-active .suitcase,
+.scene.flight-active .center-text,
+.scene.flight-active .back-btn {
+  filter: saturate(.72) brightness(.72);
+}
+
+.scene.flight-active .suitcase {
+  pointer-events: none;
+}
+
+.suitcase.departing {
+  animation: departurePulse .46s ease both !important;
+  box-shadow: 0 0 0 4px rgba(120, 205, 255, .35), 0 18px 38px rgba(0,0,0,.3);
+}
+
+@keyframes departurePulse {
+  0%   { transform: scale(1); }
+  45%  { transform: translateY(-5px) scale(1.055); }
+  100% { transform: scale(1); }
+}
+
+@media (max-width: 768px) {
+  .flight-destination {
+    top: 16%;
+    min-width: min(82vw, 330px);
+    padding: 10px 14px 11px;
+  }
+
+  .flight-plane {
+    width: 46px;
+    height: 46px;
+    font-size: 38px;
+  }
+
+  #flightPath {
+    stroke-width: 2.5;
+    stroke-dasharray: 7 10;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .flight-route,
+  .flight-plane {
+    display: none;
+  }
+
+  .flight-shade {
+    transition: none;
+  }
+}
+
 .mobile-label { display: none; }
 .ticket-section[hidden] { display: none !important; }
 
@@ -541,6 +700,19 @@ body {
   <button class="back-btn" onclick="goBack()" id="backBtn">← Back</button>
 </div>
 
+<!-- FLIGHT TRANSITION -->
+<div class="flight-layer" id="flightLayer" aria-hidden="true">
+  <div class="flight-shade"></div>
+  <svg class="flight-route" aria-hidden="true">
+    <path id="flightPath"></path>
+  </svg>
+  <div class="flight-plane" id="flightPlane" aria-hidden="true">✈</div>
+  <div class="flight-destination" id="flightDestination">
+    <span id="flightDestinationLabel">Destination</span>
+    <strong id="flightDestinationName"></strong>
+  </div>
+</div>
+
 <!-- PROJECT MODAL -->
 <div class="modal" id="projectModal" role="dialog" aria-modal="true" aria-labelledby="projectTitle">
   <div class="ticket">
@@ -577,6 +749,7 @@ const uiText = {
     description: "Description",
     tech: "Technologies used",
     demo: "Demo",
+    destination: "Destination",
     comingTitle: "Coming soon",
     comingDescription: "This project is still being prepared. Check back soon!"
   },
@@ -588,6 +761,7 @@ const uiText = {
     description: "Description",
     tech: "Technologies utilisées",
     demo: "Démo",
+    destination: "Destination",
     comingTitle: "Bientôt disponible",
     comingDescription: "Ce projet est encore en préparation. Revenez bientôt !"
   }
@@ -635,14 +809,35 @@ const projects = {
 
 const modal = document.getElementById("projectModal");
 const centerText = document.getElementById("centerText");
+const scene = document.querySelector(".scene");
+const flightLayer = document.getElementById("flightLayer");
+const flightPlane = document.getElementById("flightPlane");
+const flightPath = document.getElementById("flightPath");
+const flightDestination = document.getElementById("flightDestination");
+const flightDestinationLabel = document.getElementById("flightDestinationLabel");
+const flightDestinationName = document.getElementById("flightDestinationName");
+let flightBusy = false;
 
 document.getElementById("centerText").innerText = uiText[currentLang].center;
 document.getElementById("backBtn").innerText = uiText[currentLang].back;
 document.getElementById("descriptionLabel").innerText = uiText[currentLang].description;
 document.getElementById("techLabel").innerText = uiText[currentLang].tech;
 document.getElementById("demoLabel").innerText = uiText[currentLang].demo;
+flightDestinationLabel.innerText = uiText[currentLang].destination;
 
 function openProject(id) {
+  if (flightBusy || modal.style.display === "flex") return;
+
+  const p = projects[id];
+  const originEl = document.getElementById(`s${id}`);
+  const destinationName = p ? p.title : uiText[currentLang].comingTitle;
+
+  runFlightAnimation(originEl, destinationName, () => {
+    showProjectModal(id);
+  });
+}
+
+function showProjectModal(id) {
   centerText.style.opacity = "0";
 
   const p = projects[id];
@@ -656,7 +851,7 @@ function openProject(id) {
   demo.innerHTML = "";
   demoWrap.hidden = true;
 
-  
+  // Fallback placeholder if a future suitcase has no project yet.
   if (!p) {
     title.innerText = uiText[currentLang].comingTitle;
     description.innerText = uiText[currentLang].comingDescription;
@@ -704,8 +899,130 @@ function openProject(id) {
   document.body.style.overflow = "hidden";
 }
 
+function runFlightAnimation(originEl, destinationName, onComplete) {
+  if (!originEl) {
+    onComplete();
+    return;
+  }
+
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  flightBusy = true;
+  centerText.style.opacity = "0";
+  scene.classList.add("flight-active");
+  originEl.classList.add("departing");
+  document.body.style.overflow = "hidden";
+
+  flightDestinationName.textContent = destinationName;
+  flightLayer.classList.add("active");
+  flightLayer.setAttribute("aria-hidden", "false");
+
+  if (reduceMotion) {
+    flightLayer.classList.add("show-destination");
+    setTimeout(() => finishFlight(originEl, onComplete), 420);
+    return;
+  }
+
+  const rect = originEl.getBoundingClientRect();
+  const mobile = window.matchMedia("(max-width: 768px)").matches;
+
+  const startX = rect.left + rect.width / 2;
+  const startY = rect.top + rect.height / 2;
+
+  // Desktop flies toward the upper-right/center. Mobile flies upward toward the destination badge.
+  const endX = mobile ? window.innerWidth * 0.50 : window.innerWidth * 0.68;
+  const endY = mobile ? Math.max(112, window.innerHeight * 0.17) : Math.max(120, window.innerHeight * 0.22);
+
+  const curveLift = mobile ? 110 : 150;
+  const controlX = (startX + endX) / 2 + (mobile ? 55 : 35);
+  const controlY = Math.max(70, Math.min(startY, endY) - curveLift);
+
+  const pathD = `M ${startX.toFixed(1)} ${startY.toFixed(1)} Q ${controlX.toFixed(1)} ${controlY.toFixed(1)} ${endX.toFixed(1)} ${endY.toFixed(1)}`;
+  flightPath.setAttribute("d", pathD);
+
+  const routeLength = flightPath.getTotalLength();
+  flightPath.style.strokeDasharray = "8 11";
+  flightPath.style.strokeDashoffset = String(routeLength);
+  flightPath.animate(
+    [
+      { strokeDashoffset: routeLength, opacity: .18 },
+      { strokeDashoffset: 0, opacity: .86 }
+    ],
+    { duration: 1280, easing: "ease-out", fill: "forwards" }
+  );
+
+  const duration = mobile ? 1350 : 1500;
+  const startTime = performance.now();
+
+  function pointOnCurve(t) {
+    const mt = 1 - t;
+    return {
+      x: mt * mt * startX + 2 * mt * t * controlX + t * t * endX,
+      y: mt * mt * startY + 2 * mt * t * controlY + t * t * endY
+    };
+  }
+
+  function tangentOnCurve(t) {
+    return {
+      x: 2 * (1 - t) * (controlX - startX) + 2 * t * (endX - controlX),
+      y: 2 * (1 - t) * (controlY - startY) + 2 * t * (endY - controlY)
+    };
+  }
+
+  function easeInOut(t) {
+    return t < .5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+  }
+
+  function frame(now) {
+    const raw = Math.min(1, (now - startTime) / duration);
+    const t = easeInOut(raw);
+    const point = pointOnCurve(t);
+    const tangent = tangentOnCurve(t);
+    const angle = Math.atan2(tangent.y, tangent.x) * 180 / Math.PI;
+
+    const fadeIn = Math.min(1, raw / .12);
+    const fadeOut = raw > .88 ? Math.max(0, (1 - raw) / .12) : 1;
+    const opacity = Math.min(fadeIn, fadeOut);
+    const scale = .78 + Math.sin(Math.PI * raw) * .28;
+
+    flightPlane.style.left = `${point.x}px`;
+    flightPlane.style.top = `${point.y}px`;
+    flightPlane.style.opacity = opacity.toFixed(3);
+    flightPlane.style.transform = `translate(-50%, -50%) rotate(${angle.toFixed(1)}deg) scale(${scale.toFixed(3)})`;
+
+    if (raw > .58) {
+      flightLayer.classList.add("show-destination");
+    }
+
+    if (raw < 1) {
+      requestAnimationFrame(frame);
+    } else {
+      setTimeout(() => finishFlight(originEl, onComplete), 180);
+    }
+  }
+
+  requestAnimationFrame(frame);
+}
+
+function finishFlight(originEl, onComplete) {
+  flightLayer.classList.remove("show-destination");
+  flightPlane.style.opacity = "0";
+
+  setTimeout(() => {
+    flightLayer.classList.remove("active");
+    flightLayer.setAttribute("aria-hidden", "true");
+    scene.classList.remove("flight-active");
+    originEl.classList.remove("departing");
+    flightBusy = false;
+    onComplete();
+  }, 170);
+}
+
 function closeModal() {
   modal.style.display = "none";
+  flightLayer.classList.remove("active", "show-destination");
+  scene.classList.remove("flight-active");
+  document.querySelectorAll(".suitcase.departing").forEach(el => el.classList.remove("departing"));
+  flightBusy = false;
   centerText.style.opacity = "1";
   document.body.style.overflow = "";
 }
@@ -714,11 +1031,12 @@ function goBack() {
   window.location.href = "index.html";
 }
 
+// Close when clicking outside the ticket.
 modal.addEventListener("click", (e) => {
   if (e.target === modal) closeModal();
 });
 
-
+// Close with Escape.
 document.addEventListener("keydown", (e) => {
   if (e.key === "Escape" && modal.style.display === "flex") closeModal();
 });
