@@ -240,17 +240,21 @@
     min-height: 100svh;
   }
 
+  /* Mobile: show the complete background image without cropping it */
   .hero-bg {
-    object-fit: cover;
-    object-position: center;
+    object-fit: contain;
+    object-position: top center;
+    background: #05090b;
   }
 
+  /* Blend the intact image into the dark area used by the buttons */
   .overlay {
     background: linear-gradient(
       to bottom,
-      rgba(0,0,0,.30),
-      rgba(0,0,0,.42) 45%,
-      rgba(0,0,0,.72)
+      rgba(0,0,0,.12) 0%,
+      rgba(0,0,0,.18) 34%,
+      rgba(5,9,11,.72) 58%,
+      rgba(5,9,11,.94) 100%
     );
   }
 
