@@ -656,7 +656,7 @@ function openProject(id) {
   demo.innerHTML = "";
   demoWrap.hidden = true;
 
-  // Fallback placeholder if a future suitcase has no project yet.
+  
   if (!p) {
     title.innerText = uiText[currentLang].comingTitle;
     description.innerText = uiText[currentLang].comingDescription;
@@ -714,12 +714,11 @@ function goBack() {
   window.location.href = "index.html";
 }
 
-// Close when clicking outside the ticket.
 modal.addEventListener("click", (e) => {
   if (e.target === modal) closeModal();
 });
 
-// Close with Escape.
+
 document.addEventListener("keydown", (e) => {
   if (e.key === "Escape" && modal.style.display === "flex") closeModal();
 });
