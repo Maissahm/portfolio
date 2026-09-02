@@ -19,15 +19,23 @@
       color: white;
     }
 
-    /* Image en vrai élément (pas background) */
-    .hero-bg {
+    /* Background image: desktop + mobile via <picture> */
+    .hero-picture {
       position: absolute;
       inset: 0;
       width: 100%;
       height: 100%;
-      object-fit: cover; /* desktop: joli */
-      object-position: center;
       z-index: 0;
+      overflow: hidden;
+      background: #0b8fe8;
+    }
+
+    .hero-bg {
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: cover;
+      object-position: center;
     }
 
     /* Overlay */
@@ -236,64 +244,58 @@
     background: #05090b;
   }
 
-  /* IMPORTANT: on mobile the image is no longer used as a full-screen
-     absolute background. It keeps its natural aspect ratio, therefore
-     absolutely no part of the original image is cropped. */
   .hero {
+    position: relative;
     min-height: 100svh;
-    height: auto;
-    display: flex;
-    flex-direction: column;
-    overflow: visible;
-    background: #05090b;
+    width: 100%;
+    overflow: hidden;
+  }
+
+  /* The <source> above automatically switches to airport-bg-mobile.png.
+     We keep it full-screen and centered. */
+  .hero-picture {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
   }
 
   .hero-bg {
-    position: relative;
-    inset: auto;
     width: 100%;
-    height: auto;
-    max-width: 100%;
-    display: block;
-    object-fit: unset;
-    object-position: unset;
-    flex: 0 0 auto;
-    z-index: 0;
+    height: 100%;
+    object-fit: cover;
+    object-position: center top;
   }
 
-  /* The text is no longer placed behind the image. */
   .overlay {
-    display: none;
+    display: block;
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,.22);
+    z-index: 1;
   }
 
   .content {
     position: relative;
-    min-height: auto;
+    z-index: 2;
+    min-height: 100svh;
     width: 100%;
-    align-items: center;
+    display: flex;
+    align-items: flex-end;
     justify-content: center;
-    padding: 0 18px calc(34px + env(safe-area-inset-bottom));
-    margin-top: -54px;
-    background: linear-gradient(
-      to bottom,
-      rgba(5,9,11,0) 0,
-      rgba(5,9,11,.90) 54px,
-      #05090b 120px
-    );
+    padding: 0 18px calc(42px + env(safe-area-inset-bottom));
   }
 
   .text-box {
-    position: relative;
-    z-index: 2;
     width: 100%;
     max-width: 480px;
-    padding: 20px;
+    padding: 22px 20px;
     text-align: center;
     border: 1px solid rgba(255,255,255,.18);
     border-radius: 22px;
-    background: rgba(0,0,0,.70);
+    background: rgba(0,0,0,.68);
     backdrop-filter: blur(8px);
-    box-shadow: 0 18px 40px rgba(0,0,0,.20);
+    box-shadow: 0 18px 40px rgba(0,0,0,.22);
   }
 
   .text-box h1 {
@@ -325,12 +327,6 @@
     background: rgba(255,255,255,.10);
     border: 1px solid rgba(255,255,255,.75);
     color: #fff;
-  }
-
-  .text-box .about-btn:hover,
-  .text-box .about-btn:active {
-    background: #fff;
-    color: #111;
   }
 
   .lang-switch-airport {
@@ -390,8 +386,7 @@
   .content {
     padding-left: 14px;
     padding-right: 14px;
-    padding-bottom: calc(20px + env(safe-area-inset-bottom));
-    margin-top: -42px;
+    padding-bottom: calc(24px + env(safe-area-inset-bottom));
   }
 
   .text-box {
@@ -416,7 +411,10 @@
 
 
   <section class="hero">
-    <img class="hero-bg" src="airport-bg.png" alt="Airport background" />
+    <picture class="hero-picture">
+      <source media="(max-width: 768px)" srcset="airport-bg-mobile.png" />
+      <img class="hero-bg" src="airport-bg.png" alt="Airport background" />
+    </picture>
     <div class="overlay"></div>
 
     <div class="content">
