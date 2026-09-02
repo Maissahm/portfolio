@@ -508,7 +508,7 @@
       console.log(error.text);
     });
   });
-  let currentLang = "en";
+  let currentLang = localStorage.getItem("portfolioLang") || "en";
 const translations = {
   en: {
     title: "This is where my projects take off.",
@@ -574,6 +574,11 @@ document.getElementById("emailInput").placeholder = t.emailPlaceholder;
 document.getElementById("messageInput").placeholder = t.messagePlaceholder;
 
 }
+
+// Apply the saved/default language on every device as soon as the page loads.
+document.addEventListener("DOMContentLoaded", function () {
+  setLang(currentLang);
+});
 
 </script>
 
