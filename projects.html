@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Choose a suitcase</title>
+<!-- mobile flight animation fix v2 -->
 
 <style>
 * { box-sizing: border-box; }
@@ -262,7 +263,7 @@ body {
 .flight-layer {
   position: fixed;
   inset: 0;
-  z-index: 9000;
+  z-index: 20000;
   display: none;
   pointer-events: none;
   overflow: hidden;
@@ -380,6 +381,13 @@ body {
   box-shadow: 0 0 0 4px rgba(120, 205, 255, .35), 0 18px 38px rgba(0,0,0,.3);
 }
 
+@media (max-width: 768px) {
+  .suitcase.departing {
+    background: rgba(31,111,158,.95) !important;
+    box-shadow: 0 0 0 3px rgba(169,223,255,.55), 0 16px 34px rgba(0,0,0,.35) !important;
+  }
+}
+
 @keyframes departurePulse {
   0%   { transform: scale(1); }
   45%  { transform: translateY(-5px) scale(1.055); }
@@ -387,30 +395,51 @@ body {
 }
 
 @media (max-width: 768px) {
+  .flight-layer {
+    z-index: 20000;
+  }
+
+  .flight-shade {
+    background: rgba(2, 12, 18, .48);
+    backdrop-filter: blur(2px);
+  }
+
   .flight-destination {
-    top: 16%;
-    min-width: min(82vw, 330px);
-    padding: 10px 14px 11px;
+    top: calc(92px + env(safe-area-inset-top));
+    transform: translate(-50%, 0) scale(.94);
+    min-width: min(86vw, 350px);
+    max-width: 90vw;
+    padding: 11px 15px 12px;
+  }
+
+  .flight-layer.show-destination .flight-destination {
+    transform: translate(-50%, 0) scale(1);
   }
 
   .flight-plane {
-    width: 46px;
-    height: 46px;
-    font-size: 38px;
+    width: 58px;
+    height: 58px;
+    font-size: 50px;
+    z-index: 3;
+    text-shadow:
+      0 3px 3px rgba(0,0,0,.35),
+      0 0 14px rgba(47, 151, 220, 1),
+      0 0 30px rgba(47, 151, 220, .72);
+  }
+
+  .flight-route {
+    z-index: 2;
   }
 
   #flightPath {
-    stroke-width: 2.5;
-    stroke-dasharray: 7 10;
+    stroke-width: 3;
+    stroke-dasharray: 7 9;
+    stroke: rgba(255,255,255,.9);
   }
 }
 
+/* Respect reduced-motion preferences without making the transition disappear. */
 @media (prefers-reduced-motion: reduce) {
-  .flight-route,
-  .flight-plane {
-    display: none;
-  }
-
   .flight-shade {
     transition: none;
   }
@@ -917,9 +946,8 @@ function runFlightAnimation(originEl, destinationName, onComplete) {
   flightLayer.setAttribute("aria-hidden", "false");
 
   if (reduceMotion) {
+    /* Keep a short, low-motion transition visible instead of hiding it. */
     flightLayer.classList.add("show-destination");
-    setTimeout(() => finishFlight(originEl, onComplete), 420);
-    return;
   }
 
   const rect = originEl.getBoundingClientRect();
@@ -930,10 +958,10 @@ function runFlightAnimation(originEl, destinationName, onComplete) {
 
   // Desktop flies toward the upper-right/center. Mobile flies upward toward the destination badge.
   const endX = mobile ? window.innerWidth * 0.50 : window.innerWidth * 0.68;
-  const endY = mobile ? Math.max(112, window.innerHeight * 0.17) : Math.max(120, window.innerHeight * 0.22);
+  const endY = mobile ? Math.max(145, window.innerHeight * 0.20) : Math.max(120, window.innerHeight * 0.22);
 
-  const curveLift = mobile ? 110 : 150;
-  const controlX = (startX + endX) / 2 + (mobile ? 55 : 35);
+  const curveLift = mobile ? 145 : 150;
+  const controlX = (startX + endX) / 2 + (mobile ? 72 : 35);
   const controlY = Math.max(70, Math.min(startY, endY) - curveLift);
 
   const pathD = `M ${startX.toFixed(1)} ${startY.toFixed(1)} Q ${controlX.toFixed(1)} ${controlY.toFixed(1)} ${endX.toFixed(1)} ${endY.toFixed(1)}`;
@@ -950,7 +978,7 @@ function runFlightAnimation(originEl, destinationName, onComplete) {
     { duration: 1280, easing: "ease-out", fill: "forwards" }
   );
 
-  const duration = mobile ? 1350 : 1500;
+  const duration = reduceMotion ? 650 : (mobile ? 1450 : 1500);
   const startTime = performance.now();
 
   function pointOnCurve(t) {
